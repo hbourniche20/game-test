@@ -1,3 +1,4 @@
+<?php
 
 
 namespace App\Mechanic;
@@ -20,7 +21,7 @@ class AbilityCustomEffect
 
         // Characters
         $teamList = $ability->possessor->getRaidTeam()->getCharacterList();
-        $bossCharacter = $raidGame->getBossRaidTeam()->getCharacterList()[0];
+        $bossCharacter = $raidGame->getBossRaidTeam()->getCharacterList()[0]; // TODO Check if there is no other bosses
 
         switch($abEffecfId) {
             case 1:
@@ -41,6 +42,9 @@ class AbilityCustomEffect
             case 6:
                 AbilityCustomEffect::lifeSteal($ability->possessor, $teamList, $bossCharacter, $abEffecfScope, $abEffecfValue);
                 break;
+            case 7:
+                AbilityCustomEffect::gambling($ability->possessor, $teamList, $bossCharacter, $abEffecfScope, $abEffecfValue);
+            break;
             default:
                 AbilityCustomEffect::dealDamages($bossCharacter, $abEffecfScope, $abEffecfValue);
                 break;
@@ -159,12 +163,35 @@ class AbilityCustomEffect
      */
     private static function lifeSteal($caster, $characters, $bossCharacter, $scope, int $value){
 
-        $bossCharacter->looseHP($caster->getCurrentAttr('basedamage'));
+        $bossCharacter->looseHP($caster->getCurrentAttr('baseDamage'));
         foreach ($characters as $character) {
             if ($scope != "caster" || $scope === "caster" && $character->charSlug == $character->possessor->charSlug) {
                 $character->gainCurrentAttr('hp', $character->getCurrentAttr('baseDamage')*($value/100));
             }
         }
+    }
+
+    /**
+     * 9 chances over 10 to deal lot of damages to the boss
+     * 1 chance over 10 to deal lot of damages to a mate
+     * @param $caster
+     * @param $characters
+     * @param $bossCharacter
+     * @param $scope
+     * @param int $value Damage multiplicator
+     * @throws \Exception
+     */
+    private static function gambling($caster, $characters, $bossCharacter, $scope, int $value) {
+        $random = random_int(0, 9);
+        $target = $bossCharacter;
+        if($random == 1) {
+            if($scope == "all") {
+                $target = $characters[random_int(0, count($characters))];
+            } else {
+                $target = $caster;
+            }
+        }
+        $target->looseHP($caster->getCurrentAttr('baseDamage')*$value);
     }
 
 }
