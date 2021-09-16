@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Script-type" content="text/javascript">
+    <meta http-equiv="Content-Style-type" content="text/css">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="Content-Script-type" content="text/javascript">
+    <meta http-equiv="Content-Style-type" content="text/css">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <title>{% block title %}Welcome!{% endblock %}</title>
+
+    {% block stylesheets %}
+        {#{{ encore_entry_link_tags('app') }}#}
+    {% endblock %}
+
+    <script src="{{ asset('assets_en/1631239579/js/lib/jquery-2.0.3.min.js') }}"></script>
+    <!-- jQuery Modal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+    <script src="https://code.createjs.com/1.0.0/preloadjs.min.js"></script>
+    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+    <script src="https://code.createjs.com/1.0.0/tweenjs.min.js"></script>
+    <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/underscore@latest/underscore-umd-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js"></script>
+    <script src="{{ asset('assets_en/1631239579/js/lib/require.js') }}" crossorigin="anonymous"></script>
+
+    <script src="{{ asset('assets_en/1631239579/js/lib/mylib.js') }}"></script>
+
+    <!-- Js Scripts -->
+    <!-- Game Js  -->
+    <script src="{{ asset('js/game.js') }}"></script>
+
+    <!-- Test Js  -->
+    <script src="{{ asset('js/game-ressource.js') }}"></script>
+    <script src="{{ asset('js/raid.js') }}"></script>
+</head>
+
+{% block body %}{% endblock %}
+
+{% block javascripts %}
+    {#{{ encore_entry_script_tags('app') }}#}
+{% endblock %}
+
+</html>

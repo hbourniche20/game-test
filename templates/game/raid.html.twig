@@ -1,0 +1,145 @@
+{% extends 'base_raid.html.twig' %}
+
+{% block title %}Raid{% endblock %}
+
+{% block body %}
+<script>
+    Game.userId = {{ app.user.id }}
+    Game.userSlug = "{{ app.user.slug }}";
+    Game.userToken = "151";
+</script>
+<style>
+    .game-img-btn{
+        border: 0;
+        width: 110px;
+        height: 40px;
+        background-color: transparent;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+
+    #attackBtn{
+        background-image: url({{ asset('assets_en/img/sp/ui/btn_attack.png') }});
+    }
+    #attackBtn:hover{
+        background-image: url({{ asset('assets_en/img/sp/ui/btn_attack_active.png') }});
+    }
+    #superAttackBtn{
+        background-image: url({{ asset('assets_en/img/sp/ui/btn_super.png') }});
+    }
+    #superAttackBtn.disable{
+        background-image: url({{ asset('assets_en/img/sp/ui/btn_super_disable.png') }});
+    }
+    #chooseSkillBtn{
+        background-image: url({{ asset('assets_en/img/sp/ui/btn_skill.png') }});
+    }
+    #chooseSkillBtn:hover{
+        background-image: url({{ asset('assets_en/img/sp/ui/btn_skill_active.png') }});
+    }
+</style>
+<body class="jssdk">
+<div class="_2ZVw0TYkWYwvh2YurVv1OG _2lsvE43T8AGADGf6xw_zWs _2GSEVm9wJNRxSdrjUOaWsg">
+    <div class="SdEyhW_kE0xoDznTZ5Wr-">
+        <div id="mobage-game-container" class="mobage-game-container slide-menu" data-show-menubar-width="64" data-position-layout="slide" tabindex="1" style="zoom: 1.5;">
+            <div id="wrapper" class="wrapper">
+                <div class="contents" style="display: block;">
+                    <div class="game-frame-log">fps</div>
+                    <!-- Modal HTML embedded directly into document -->
+                    <div id="game-modal" class="modal">
+                        <p>Thanks for clicking. That felt good.</p>
+                        <a href="#" rel="modal:close">Close</a>
+                    </div>
+                    <!-- Modal HTML embedded directly into document -->
+                    <!-- Team Party UI -->
+                    <div class="party-info-section">
+                        <h2>Party Info</h2>
+                        {%  for character in raid.getRaidTeamByKind("player").characterList() %}
+                            <div class="char-unit">
+                                <!-- User Name -->
+                                {{ character.charPlayer.user.username }}
+                                <!-- Char Hp BAr -->
+                                <div class="party-health-wrapper">
+                                    <div class="{{ character.charPlayer.user.slug }}-hp-bar bar"></div>
+                                    <div class="{{ character.charPlayer.user.slug }}-hp-bar-flash bar bar-flash"></div>
+                                    <div class="{{ character.charPlayer.user.slug }}-bar-hp-number bar-hp-number">10000</div>
+                                </div>
+                                <!-- Char Charge Bar -->
+                                <div class="party-charge-bar-wrapper">
+                                    <div class="{{ character.charPlayer.user.slug }}-cB-bar bar" style="width: 0%"></div>
+                                    <div class="{{ character.charPlayer.user.slug }}-cB-bar-percent bar-percent">0%</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                   <!-- Raid stage -->
+                    <div class="cnt-raid">
+                        <div class="prt-stage-wrapper">
+                            <div class="prt-bg-stage-distant" style="background-image: url({{ asset('assets_en/img/sp/raid/bg/') }}{{ raid.backgroundUrl }});"></div>
+                            <div class="prt-bg-effect-brightness"></div>
+                            <div class="prt-bg-effect-color"></div>
+                            <canvas id="canvas" width="640" height="654" cjs-noclip="1" cjs-context="2d" data-width="320" data-height="327" dena-version="0.9.1436.8" dena-context="2d" style="zoom: 0.666667;width: 480px;height: 490.5px;"></canvas>
+                        </div>
+                        <div id="part-scenario-notif" class="part-scenario-message"></div>
+                        <div class="boss-info-zone">
+                            <div class="boss-name">Belial</div>
+                            <div class="Boss-hp-percent boss-health-percent">100%</div>
+                            <div class="boss-health" style="background-image: url({{ asset('assets_en/img/sp/ui/hp_bar_border.png') }})">
+                                <div class="boss-health-wrapper">
+                                    <div class="Boss-hp-bar bar"></div>
+                                    <div class="Boss-hp-bar-flash bar bar-flash"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prt-command">
+                            <div class="prt-command-chara" pos="1" style="display: block;">
+                                <div class="lis-character1">
+                                    <img class="img-chara-command" src="{{ asset('assets_en/img/sp/assets/npc/raid_normal/') }}{{ raidChar.getCharPlayer().getClasse().getLibData()['identifier_2']  }}.jpg">
+                                </div>
+{#                                Ability list #}
+                                <div class="prt-ability-list" style="display: hidden;">
+                                    <div class="backCmdContent">
+                                        <button type="button" id="backCommandBtn">Back to command</button>
+                                    </div>
+                                    {% for ability in raidChar.getCharPlayer().getClasse().getAbilityListByKind('skill') %}
+                                    <div id="skill-{{ loop.index - 1 }}" class="lis-ability">
+                                        <button data-ability-index="{{ loop.index - 1 }}" class="ability-btn"><img class="img-ability-icon" src="{{ asset('assets_en/img/sp/ui/icon/ability/m/') }}{{ ability.icon }}"></button>
+                                        <span>5 turns</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+{#                                Command choice #}
+                                <div class="prt-command-choice">
+                                    <div class="raid-command-list">
+                                        <div>
+                                            <button type="button" class="game-img-btn" id="attackBtn"></button>
+                                            <button type="button" class="game-img-btn" id="superAttackBtn"></button>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="game-img-btn" id="chooseSkillBtn"></button>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+{#                                Waiting banner #}
+                                <div class="prt-command-waiting">
+                                    <div>
+                                      <h4>En attente des autres joueurs</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="{{ asset('assets_en/1631239579/js/gameUI.js') }}"></script>
+<script src="{{ asset('assets_en/1631239579/js/scenario.js') }}"></script>
+<script src="{{ asset('assets_en/1631239579/js/fighter.js') }}"></script>
+<script src="{{ asset('js/my-game.js') }}"></script>
+<script src="{{ asset('js/raid-socket.js') }}"></script>
+
+{% endblock %}
